@@ -83,3 +83,14 @@ dotnet_naming_rule.members_pascal.severity = warning
 dotnet_naming_symbols.public_members.applicable_kinds = property,method,event,class,struct,enum,delegate
 dotnet_naming_symbols.public_members.applicable_accessibilities = public,internal,protected
 dotnet_naming_style.pascal.capitalization = pascal_case
+
+# ------------------------------------------------------- generated code
+# EF Core writes these files; their shape is decided by its code generator,
+# not by us. Enforcing our style here would mean hand-editing every new
+# migration — and losing that edit the next time one is scaffolded.
+# The code still compiles under nullable and still gets correctness analysis;
+# only style and suggestion-level rules are turned off.
+[**/Migrations/*.cs]
+generated_code = true
+dotnet_diagnostic.IDE0161.severity = none
+dotnet_diagnostic.CA1861.severity = none

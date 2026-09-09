@@ -1,9 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
+    <!-- Links this project to %APPDATA%\Microsoft\UserSecrets\<id>\secrets.json,
+         where the local connection string lives. Per-project by design, so it
+         belongs here and not in Directory.Build.props. -->
+    <UserSecretsId>b5977de3-1881-42a0-b5b4-d1d673abb4ac</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EFCore.NamingConventions" Version="10.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.12">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
