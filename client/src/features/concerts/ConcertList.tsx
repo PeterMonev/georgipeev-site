@@ -1,20 +1,7 @@
+import { Link } from "react-router";
 import type { Lang } from "../../api/types";
+import { formatWhen } from "./formatWhen";
 import { useConcerts } from "./useConcerts";
-
-/**
- * The server stores an instant; the browser decides how it reads. Sofia time,
- * in the visitor's language, computed by the platform rather than by us.
- */
-function formatWhen(iso: string, lang: Lang): string {
-  return new Intl.DateTimeFormat(lang === "en" ? "en-GB" : "bg-BG", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Europe/Sofia",
-  }).format(new Date(iso));
-}
 
 export function ConcertList({ lang }: { lang: Lang }) {
   const state = useConcerts(lang);
@@ -40,9 +27,11 @@ export function ConcertList({ lang }: { lang: Lang }) {
         <ul>
           {state.concerts.map((concert) => (
             <li key={concert.slug}>
-              <time dateTime={concert.startsAt}>{formatWhen(concert.startsAt, lang)}</time>
-              {" — "}
-              <strong>{concert.venue}</strong>, {concert.city}
+              <Link to={`/koncerti/${concert.slug}`}>
+                <time dateTime={concert.startsAt}>{formatWhen(concert.startsAt, lang)}</time>
+                {" — "}
+                <strong>{concert.venue}</strong>, {concert.city}
+              </Link>
               {concert.note && <> · {concert.note}</>}
             </li>
           ))}

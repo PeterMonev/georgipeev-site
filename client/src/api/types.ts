@@ -15,4 +15,19 @@ export type ConcertListItem = {
   ticketUrl: string | null;
 };
 
+/**
+ * Mirrors GeorgiPeev.Web.Features.Concerts.ConcertDetail.
+ * Same fields as the list plus description — separate here for the same reason
+ * it is separate on the server: the list never carries it.
+ */
+export type ConcertDetail = {
+  slug: string;
+  startsAt: string;
+  venue: string;
+  city: string;
+  note: string;
+  description: string;
+  ticketUrl: string | null;
+};
+
 export type Lang = "bg" | "en";
