@@ -1,4 +1,5 @@
 using GeorgiPeev.Web.Data;
+using GeorgiPeev.Web.Features.Concerts;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,14 +28,15 @@ var app = builder.Build();
 // ---- pipeline and endpoints: everything below works on the built app ----
 
 // Liveness probe. Render and netcup poll this every few seconds.
-app.MapGet("/healthz", () => Results.Ok(new { status = "ok", utc = DateTime.UtcNow }));
+app.MapGet("/healthz", (TimeProvider clock) =>
+    Results.Ok(new { status = "ok", utc = clock.GetUtcNow() }));
 
 // Use UseStaticFiles, NOT MapStaticAssets.
 // MapStaticAssets reads a manifest built at C# compile time. Vite's output is
 // written after that, so it never appears in the manifest and every asset 404s.
 app.UseStaticFiles();
 
-app.MapGet("/api/ping", () => Results.Ok(new { pong = true }));
+app.MapConcertEndpoints();
 
 // Anything that is not a file and not an API route returns index.html.
 // From there the React router decides which page to render.
