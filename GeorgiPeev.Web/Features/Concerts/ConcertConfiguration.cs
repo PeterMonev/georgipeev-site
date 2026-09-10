@@ -52,5 +52,11 @@ internal sealed class ConcertConfiguration : IEntityTypeConfiguration<Concert>
             v.Property(p => p.Bg).HasMaxLength(200);
             v.Property(p => p.En).HasMaxLength(200);
         });
+
+        builder.OwnsOne(c => c.Description, v =>
+        {
+            v.Property(p => p.Bg).HasMaxLength(2000);
+            v.Property(p => p.En).HasMaxLength(2000);
+        });
     }
 }

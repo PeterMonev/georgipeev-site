@@ -29,6 +29,8 @@ public sealed class Concert
     /// <summary>The small line under the venue: "Solo show", "with the orchestra".</summary>
     public required Localized Note { get; set; }
 
+    public required Localized Description { get; set; }
+
     public string? TicketUrl { get; set; }
 
     /// <summary>Georgi can save a draft and publish it when he is ready.</summary>
@@ -36,4 +38,5 @@ public sealed class Concert
 
     public DateTimeOffset CreatedUtc { get; set; }
     public DateTimeOffset? UpdatedUtc { get; set; }
+
 }

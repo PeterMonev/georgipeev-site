@@ -19,6 +19,10 @@ internal static class ConcertEndpoints
             .WithName("GetUpcomingConcerts")
             .WithSummary("Published concerts that have not happened yet, soonest first.");
 
+        group.MapGet("/{slug}", GetBySlugAsync)
+            .WithName("GetConcertBySlug")
+            .WithSummary("One published concert by its slug, past or future.");
+
         return routes;
     }
 
@@ -54,5 +58,42 @@ internal static class ConcertEndpoints
             .ToListAsync(cancellationToken);
 
         return TypedResults.Ok(concerts);
+    }
+
+    /// <summary>
+    /// Note the return type: Results&lt;Ok&lt;T&gt;, NotFound&gt; is a union. The method can
+    /// return one of exactly two things, and the compiler enforces it — the same
+    /// idea as the discriminated union on the TypeScript side.
+    ///
+    /// Unlike the list, this does not filter by date: a concert that has already
+    /// happened still has a page, and links to it must keep working.
+    /// </summary>
+    private static async Task<Results<Ok<ConcertDetail>, NotFound>> GetBySlugAsync(
+        string slug,
+        AppDbContext db,
+        string? lang,
+        CancellationToken cancellationToken)
+    {
+        var english = string.Equals(lang, "en", StringComparison.OrdinalIgnoreCase);
+
+        var concert = await db.Concerts
+            .AsNoTracking()
+            .Where(c => c.IsPublished && c.Slug == slug)
+            .Select(c => new ConcertDetail(
+                c.Slug,
+                c.StartsAt,
+                english ? c.Venue.En : c.Venue.Bg,
+                english ? c.City.En : c.City.Bg,
+                english ? c.Note.En : c.Note.Bg,
+                english ? c.Description.En : c.Description.Bg,
+                c.TicketUrl))
+            // FirstOrDefault, not Single: Single asks the database for two rows
+            // to prove there is only one. The unique index on slug already
+            // guarantees that, so the second read would be pure waste.
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return concert is null
+            ? TypedResults.NotFound()
+            : TypedResults.Ok(concert);
     }
 }
