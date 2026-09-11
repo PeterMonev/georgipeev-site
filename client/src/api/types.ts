@@ -34,4 +34,49 @@ export type Lang = "bg" | "en";
 
 export type CurrentUser = {
   email: string;
-}
+};
+
+/** Mirrors GeorgiPeev.Web.Common.Localized. */
+export type Localized = {
+  bg: string;
+  en: string;
+};
+
+/** Mirrors GeorgiPeev.Web.Features.Concerts.ConcertAdminListItem. */
+export type ConcertAdminListItem = {
+  id: string;
+  slug: string;
+  startsAt: string;
+  venue: string;
+  city: string;
+  isPublished: boolean;
+};
+
+/** Mirrors GeorgiPeev.Web.Features.Concerts.ConcertAdminDetail. */
+export type ConcertAdminDetail = {
+  id: string;
+  slug: string;
+  startsAt: string;
+  venue: Localized;
+  city: Localized;
+  note: Localized;
+  description: Localized;
+  ticketUrl: string | null;
+  isPublished: boolean;
+  /** The row version this was read at; goes back to the server on save. */
+  version: number;
+};
+
+/** Mirrors GeorgiPeev.Web.Features.Concerts.ConcertInput — what the form sends. */
+export type ConcertInput = {
+  slug: string;
+  startsAt: string;
+  venue: Localized;
+  city: Localized;
+  note: Localized;
+  description: Localized;
+  ticketUrl: string | null;
+  isPublished: boolean;
+  /** 0 for a new concert; the loaded version for an existing one. */
+  version: number;
+};

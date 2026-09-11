@@ -52,6 +52,19 @@ function parseJson(text: string): unknown {
   }
 }
 
+/**
+ * The validator names fields the C# way ("TicketUrl"); the JSON body names
+ * them "ticketUrl". One spelling everywhere, decided here and nowhere else.
+ */
+function camelCaseKeys(errors: FieldErrors): FieldErrors {
+  return Object.fromEntries(
+    Object.entries(errors).map(([key, messages]) => [
+      key.charAt(0).toLowerCase() + key.slice(1),
+      messages,
+    ]),
+  );
+}
+
 async function throwIfFailed(response: Response): Promise<void> {
   if (response.ok) return;
 
@@ -61,7 +74,11 @@ async function throwIfFailed(response: Response): Promise<void> {
   const problem = parseJson(text);
 
   if (isProblemDetails(problem)) {
-    throw new ApiError(response.status, problem.title ?? response.statusText, problem.errors ?? {});
+    throw new ApiError(
+      response.status,
+      problem.title ?? response.statusText,
+      camelCaseKeys(problem.errors ?? {}),
+    );
   }
 
   throw new ApiError(response.status, text || response.statusText);
@@ -112,6 +129,16 @@ export async function postJson<TResponse>(
   return (await response.json()) as TResponse;
 }
 
+/** PUT a JSON body and read the updated resource back. */
+export async function putJson<TResponse>(
+  path: string,
+  body: unknown,
+  signal?: AbortSignal,
+): Promise<TResponse> {
+  const response = await send("PUT", path, body, signal);
+  return (await response.json()) as TResponse;
+}
+
 /**
  * POST and expect nothing back (204) — sign-out, change password. Kept
  * separate from postJson so the return type is honest: there is nothing to
@@ -119,4 +146,9 @@ export async function postJson<TResponse>(
  */
 export async function post(path: string, body?: unknown, signal?: AbortSignal): Promise<void> {
   await send("POST", path, body, signal);
+}
+
+/** DELETE, expecting 204. Named `del` because `delete` is a reserved word. */
+export async function del(path: string, signal?: AbortSignal): Promise<void> {
+  await send("DELETE", path, undefined, signal);
 }

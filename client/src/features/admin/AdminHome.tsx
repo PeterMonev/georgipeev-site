@@ -14,6 +14,9 @@ export function AdminHome({ lang }: { lang: Lang }) {
       <h2>{lang === "en" ? "Admin" : "Админ"}</h2>
       <p>{state.user.email}</p>
       <p>
+        <Link to="/admin/koncerti">{lang === "en" ? "Concerts" : "Концерти"}</Link>
+      </p>
+      <p>
         <Link to="/admin/parola">{lang === "en" ? "Change password" : "Смяна на паролата"}</Link>
       </p>
       <button

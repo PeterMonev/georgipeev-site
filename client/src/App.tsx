@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Link, Route, Routes } from "react-router";
 import type { Lang } from "./api/types";
 import { AdminHome } from "./features/admin/AdminHome";
+import { ConcertsPage } from "./features/admin/concerts/ConcertsPage";
+import { EditConcertPage } from "./features/admin/concerts/EditConcertPage";
+import { NewConcertPage } from "./features/admin/concerts/NewConcertPage";
 import { AuthProvider } from "./features/auth/AuthProvider";
 import { ChangePasswordPage } from "./features/auth/ChangePasswordPage";
 import { LoginPage } from "./features/auth/LoginPage";
@@ -43,6 +46,9 @@ export default function App() {
           <Route element={<RequireAuth />}>
             <Route path="/admin" element={<AdminHome lang={lang} />} />
             <Route path="/admin/parola" element={<ChangePasswordPage lang={lang} />} />
+            <Route path="/admin/koncerti" element={<ConcertsPage lang={lang} />} />
+            <Route path="/admin/koncerti/nov" element={<NewConcertPage lang={lang} />} />
+            <Route path="/admin/koncerti/:id" element={<EditConcertPage lang={lang} />} />
           </Route>
 
           <Route

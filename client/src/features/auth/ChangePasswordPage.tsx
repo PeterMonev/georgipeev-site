@@ -1,8 +1,9 @@
 import { useState, type FormEvent } from "react";
 import { changePassword } from "../../api/auth";
 import { ApiError, type FieldErrors } from "../../api/client";
+import { translateErrors } from "../../api/errorMessages";
 import type { Lang } from "../../api/types";
-import { translateIdentityErrors } from "./identityMessages";
+import { FieldError } from "../../components/FieldError";
 
 type Outcome =
   | { status: "idle" }
@@ -46,7 +47,7 @@ export function ChangePasswordPage({ lang }: { lang: Lang }) {
       // line under the form, keyed like a field so it renders the same way.
       const failure: FieldErrors =
         caught instanceof ApiError && caught.status === 400
-          ? translateIdentityErrors(caught.errors, lang)
+          ? translateErrors(caught.errors, lang)
           : {
               form: [
                 en ? "Could not change the password. Try again." : "Смяната не се получи. Опитай пак.",
@@ -113,11 +114,4 @@ export function ChangePasswordPage({ lang }: { lang: Lang }) {
       </button>
     </form>
   );
-}
-
-/** Renders nothing when there is nothing to say, so the caller need not check. */
-function FieldError({ messages }: { messages: string[] | undefined }) {
-  if (messages === undefined || messages.length === 0) return null;
-
-  return <p role="alert">{messages.join(" ")}</p>;
 }
