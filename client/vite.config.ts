@@ -17,7 +17,6 @@ export default defineConfig({
     // Plain HTTP on 5038, not HTTPS on 7194 — avoids the self-signed cert.
     proxy: {
       '/api': 'http://localhost:5038',
-      '/admin': 'http://localhost:5038',
       '/healthz': 'http://localhost:5038',
     },
   },

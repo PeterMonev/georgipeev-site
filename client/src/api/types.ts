@@ -31,3 +31,7 @@ export type ConcertDetail = {
 };
 
 export type Lang = "bg" | "en";
+
+export type CurrentUser = {
+  email: string;
+}
