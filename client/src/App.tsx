@@ -3,6 +3,7 @@ import { Link, Route, Routes } from "react-router";
 import type { Lang } from "./api/types";
 import { AdminHome } from "./features/admin/AdminHome";
 import { AuthProvider } from "./features/auth/AuthProvider";
+import { ChangePasswordPage } from "./features/auth/ChangePasswordPage";
 import { LoginPage } from "./features/auth/LoginPage";
 import { RequireAuth } from "./features/auth/RequireAuth";
 import { ConcertList } from "./features/concerts/ConcertList";
@@ -41,6 +42,7 @@ export default function App() {
               RequireAuth has no path of its own — it is a gate, not a page. */}
           <Route element={<RequireAuth />}>
             <Route path="/admin" element={<AdminHome lang={lang} />} />
+            <Route path="/admin/parola" element={<ChangePasswordPage lang={lang} />} />
           </Route>
 
           <Route

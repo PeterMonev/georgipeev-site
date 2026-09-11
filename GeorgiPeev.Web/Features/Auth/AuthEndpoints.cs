@@ -17,6 +17,10 @@ internal static class AuthEndpoints
             .WithName("Logout")
             .RequireAuthorization();
 
+        group.MapPost("/change-password", ChangePasswordAsync)
+            .WithName("ChangePassword")
+            .RequireAuthorization();
+
         group.MapGet("/me", Me)
             .WithName("CurrentUser")
             .RequireAuthorization();
@@ -56,6 +60,47 @@ internal static class AuthEndpoints
     private static async Task<NoContent> LogoutAsync(SignInManager<AppUser> signIn)
     {
         await signIn.SignOutAsync();
+        return TypedResults.NoContent();
+    }
+
+    /// <summary>
+    /// Identity does the real work: it checks the current password, runs the
+    /// new one through the same rules as at sign-up, hashes and stores it.
+    /// We only translate its answer into HTTP.
+    /// </summary>
+    private static async Task<Results<NoContent, ValidationProblem, UnauthorizedHttpResult>> ChangePasswordAsync(
+        ChangePasswordRequest request,
+        ClaimsPrincipal principal,
+        UserManager<AppUser> users,
+        SignInManager<AppUser> signIn)
+    {
+        var user = await users.GetUserAsync(principal);
+        if (user is null)
+        {
+            // A valid cookie for an account that no longer exists.
+            return TypedResults.Unauthorized();
+        }
+
+        var result = await users.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+        if (!result.Succeeded)
+        {
+            // Identity reports errors by code. One of them is about the current
+            // password; every other one is about the new one. The browser shows
+            // each message under the field it belongs to.
+            var errors = result.Errors
+                .GroupBy(e => e.Code == nameof(IdentityErrorDescriber.PasswordMismatch)
+                    ? "currentPassword"
+                    : "newPassword")
+                .ToDictionary(g => g.Key, g => g.Select(e => e.Description).ToArray());
+
+            return TypedResults.ValidationProblem(errors);
+        }
+
+        // Changing a password rotates the account's security stamp. The cookie
+        // carries the old stamp, and Identity re-checks it every 30 minutes —
+        // without a fresh cookie the user would be signed out mid-session.
+        await signIn.RefreshSignInAsync(user);
+
         return TypedResults.NoContent();
     }
 

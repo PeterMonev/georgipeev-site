@@ -3,41 +3,103 @@
  * deals in typed values and thrown errors, never in Response objects.
  */
 
+/**
+ * Per-field messages, keyed the way the server keys them ("newPassword").
+ * Partial, because a key that was not sent is undefined — and the type
+ * should say so, or every lookup would be a silent lie.
+ */
+export type FieldErrors = Partial<Record<string, string[]>>;
+
 export class ApiError extends Error {
   readonly status: number;
+  /** Filled from a 400 validation response; empty for every other failure. */
+  readonly errors: FieldErrors;
 
-  constructor(status: number, message: string) {
+  constructor(status: number, message: string, errors: FieldErrors = {}) {
     super(message);
     this.name = "ApiError";
     this.status = status;
+    this.errors = errors;
   }
 }
-export async function getJson<T>(path: string, signal?: AbortSignal): Promise<T> {
-  const response = await fetch(path, {
-    signal,
-    headers: { Accept: "application/json" },
-  });
 
-  if (!response.ok) {
-    // A failed response often carries a useful message. Read it before throwing,
-    // otherwise the caller only ever sees a bare status number.
-    const body = await response.text().catch(() => "");
-    throw new ApiError(response.status, body || response.statusText);
-  }
-
-  return (await response.json()) as T;
-}
-
-const jsonHeaders = {
-  Accept: "application/json",
-  "Content-Type": "application/json",
+/**
+ * The body ASP.NET Core sends with a failed request (RFC 9457, "problem
+ * details"). Only the members we read are listed; extra ones are ignored.
+ */
+type ProblemDetails = {
+  title?: string;
+  errors?: FieldErrors;
 };
+
+/**
+ * A type guard: the return type "value is ProblemDetails" tells TypeScript
+ * that inside an `if` which calls this, `value` may be treated as that type.
+ * The runtime check and the compile-time narrowing are one and the same.
+ */
+function isProblemDetails(value: unknown): value is ProblemDetails {
+  return typeof value === "object" && value !== null && ("title" in value || "errors" in value);
+}
+
+/** JSON.parse that answers "not JSON" with undefined instead of throwing. */
+function parseJson(text: string): unknown {
+  try {
+    // JSON.parse returns `any`. The declared return type stops it here, at
+    // the door, so nothing above this line ever sees an `any`.
+    return JSON.parse(text);
+  } catch {
+    return undefined;
+  }
+}
 
 async function throwIfFailed(response: Response): Promise<void> {
   if (response.ok) return;
 
-  const body = await response.text().catch(() => "");
-  throw new ApiError(response.status, body || response.statusText);
+  // A failed response often carries a useful body. Read it before throwing,
+  // otherwise the caller only ever sees a bare status number.
+  const text = await response.text().catch(() => "");
+  const problem = parseJson(text);
+
+  if (isProblemDetails(problem)) {
+    throw new ApiError(response.status, problem.title ?? response.statusText, problem.errors ?? {});
+  }
+
+  throw new ApiError(response.status, text || response.statusText);
+}
+
+type Method = "GET" | "POST" | "PUT" | "DELETE";
+
+/**
+ * One function makes every request; the exported ones below only decide what
+ * to send and what to read back. A header added here reaches every call.
+ */
+async function send(
+  method: Method,
+  path: string,
+  body?: unknown,
+  signal?: AbortSignal,
+): Promise<Response> {
+  const headers: Record<string, string> = { Accept: "application/json" };
+
+  // Only announce a JSON body when there is one.
+  if (body !== undefined) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  const response = await fetch(path, {
+    method,
+    headers,
+    body: body === undefined ? undefined : JSON.stringify(body),
+    signal,
+  });
+
+  await throwIfFailed(response);
+  return response;
+}
+
+export async function getJson<T>(path: string, signal?: AbortSignal): Promise<T> {
+  const response = await send("GET", path, undefined, signal);
+  return (await response.json()) as T;
 }
 
 /** POST a JSON body and read a JSON body back. */
@@ -46,23 +108,15 @@ export async function postJson<TResponse>(
   body: unknown,
   signal?: AbortSignal,
 ): Promise<TResponse> {
-  const response = await fetch(path, {
-    method: "POST",
-    headers: jsonHeaders,
-    body: JSON.stringify(body),
-    signal,
-  });
-
-  await throwIfFailed(response);
+  const response = await send("POST", path, body, signal);
   return (await response.json()) as TResponse;
 }
 
 /**
- * POST with no body and no answer expected — sign-out, for instance. Kept
+ * POST and expect nothing back (204) — sign-out, change password. Kept
  * separate from postJson so the return type is honest: there is nothing to
  * return, and pretending otherwise would need a cast.
  */
-export async function post(path: string, signal?: AbortSignal): Promise<void> {
-  const response = await fetch(path, { method: "POST", headers: jsonHeaders, signal });
-  await throwIfFailed(response);
+export async function post(path: string, body?: unknown, signal?: AbortSignal): Promise<void> {
+  await send("POST", path, body, signal);
 }

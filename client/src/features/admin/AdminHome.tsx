@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import type { Lang } from "../../api/types";
 import { useAuth } from "../auth/useAuth";
 
@@ -12,6 +13,9 @@ export function AdminHome({ lang }: { lang: Lang }) {
     <section>
       <h2>{lang === "en" ? "Admin" : "Админ"}</h2>
       <p>{state.user.email}</p>
+      <p>
+        <Link to="/admin/parola">{lang === "en" ? "Change password" : "Смяна на паролата"}</Link>
+      </p>
       <button
         type="button"
         onClick={() => {

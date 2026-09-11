@@ -12,3 +12,7 @@ export function login(email: string, password: string) {
 export function logout() {
   return post("/api/auth/logout");
 }
+
+export function changePassword(currentPassword: string, newPassword: string) {
+  return post("/api/auth/change-password", { currentPassword, newPassword });
+}
