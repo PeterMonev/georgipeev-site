@@ -28,8 +28,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signOut = useCallback(async () => {
-    await logout();
-    setState({ status: "anonymous" });
+    try {
+      await logout();
+    } finally {
+      // Whatever the server answered, the person asked to leave. Forgetting
+      // them locally is always right: if the cookie somehow survived, the
+      // next page load asks /me and the truth comes back from the server.
+      setState({ status: "anonymous" });
+    }
   }, []);
 
   // The context value is an object. Without useMemo it would be a fresh object

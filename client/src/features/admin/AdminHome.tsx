@@ -12,7 +12,14 @@ export function AdminHome({ lang }: { lang: Lang }) {
     <section>
       <h2>{lang === "en" ? "Admin" : "Админ"}</h2>
       <p>{state.user.email}</p>
-      <button type="button" onClick={() => void signOut()}>
+      <button
+        type="button"
+        onClick={() => {
+          // The UI already forgets the user in `finally`; a failed server call
+          // has nothing left to tell us, so it is swallowed here on purpose.
+          signOut().catch(() => {});
+        }}
+      >
         {lang === "en" ? "Sign out" : "Изход"}
       </button>
     </section>
