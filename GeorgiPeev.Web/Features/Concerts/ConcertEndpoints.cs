@@ -48,12 +48,14 @@ internal static class ConcertEndpoints
             .OrderBy(c => c.StartsAt)
             // Projecting into the DTO inside the query means SQL selects only
             // these columns. Mapping after ToListAsync would fetch every one.
+            // English is optional in the admin, so an empty English text
+            // falls back to the Bulgarian one rather than to a blank.
             .Select(c => new ConcertListItem(
                 c.Slug,
                 c.StartsAt,
-                english ? c.Venue.En : c.Venue.Bg,
-                english ? c.City.En : c.City.Bg,
-                english ? c.Note.En : c.Note.Bg,
+                english && c.Venue.En != "" ? c.Venue.En : c.Venue.Bg,
+                english && c.City.En != "" ? c.City.En : c.City.Bg,
+                english && c.Note.En != "" ? c.Note.En : c.Note.Bg,
                 c.TicketUrl))
             .ToListAsync(cancellationToken);
 
@@ -82,10 +84,10 @@ internal static class ConcertEndpoints
             .Select(c => new ConcertDetail(
                 c.Slug,
                 c.StartsAt,
-                english ? c.Venue.En : c.Venue.Bg,
-                english ? c.City.En : c.City.Bg,
-                english ? c.Note.En : c.Note.Bg,
-                english ? c.Description.En : c.Description.Bg,
+                english && c.Venue.En != "" ? c.Venue.En : c.Venue.Bg,
+                english && c.City.En != "" ? c.City.En : c.City.Bg,
+                english && c.Note.En != "" ? c.Note.En : c.Note.Bg,
+                english && c.Description.En != "" ? c.Description.En : c.Description.Bg,
                 c.TicketUrl))
             // FirstOrDefault, not Single: Single asks the database for two rows
             // to prove there is only one. The unique index on slug already

@@ -74,6 +74,19 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddAuthorization();
 
+// Minimal APIs validate request bodies against their DataAnnotations and
+// answer 400 in the Problem Details format before a handler ever runs.
+builder.Services.AddValidation();
+
+// Make C#'s nullability real at the JSON boundary: a null where the type says
+// non-null, or a missing required field, is rejected on the way in instead of
+// becoming a NullReferenceException somewhere deep inside.
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.RespectNullableAnnotations = true;
+    options.SerializerOptions.RespectRequiredConstructorParameters = true;
+});
+
 // Build() seals the container. Nothing added to builder.Services after this
 // line is ever seen again.
 var app = builder.Build();
@@ -103,6 +116,7 @@ app.UseAuthorization();
 
 app.MapAuthEndpoints();
 app.MapConcertEndpoints();
+app.MapConcertAdminEndpoints();
 
 // Anything that is not a file and not an API route returns index.html.
 // From there the React router decides which page to render.

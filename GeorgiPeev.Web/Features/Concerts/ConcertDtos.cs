@@ -1,3 +1,5 @@
+using GeorgiPeev.Web.Common;
+
 namespace GeorgiPeev.Web.Features.Concerts;
 
 /// <summary>
@@ -29,3 +31,31 @@ public sealed record ConcertDetail(
     string Note,
     string Description,
     string? TicketUrl);
+
+/// <summary>
+/// One row in the admin table. Bulgarian only and no description: the table
+/// is for finding a concert, the edit form is for reading it.
+/// </summary>
+public sealed record ConcertAdminListItem(
+    Guid Id,
+    string Slug,
+    DateTimeOffset StartsAt,
+    string Venue,
+    string City,
+    bool IsPublished);
+
+/// <summary>
+/// Everything the edit form needs, both languages, plus the row version it
+/// must send back so the server can tell whether someone else saved first.
+/// </summary>
+public sealed record ConcertAdminDetail(
+    Guid Id,
+    string Slug,
+    DateTimeOffset StartsAt,
+    Localized Venue,
+    Localized City,
+    Localized Note,
+    Localized Description,
+    string? TicketUrl,
+    bool IsPublished,
+    uint Version);
