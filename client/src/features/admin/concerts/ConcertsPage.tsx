@@ -32,7 +32,7 @@ export function ConcertsPage({ lang }: { lang: Lang }) {
           <p className="kicker">{en ? "Admin" : "Админ"}</p>
           <h2>{en ? "Concerts" : "Концерти"}</h2>
         </div>
-        <Link to="/admin/koncerti/nov" className="btn">
+        <Link to="/admin/concerts/new" className="btn">
           {en ? "New concert" : "Нов концерт"}
         </Link>
       </div>
@@ -84,7 +84,7 @@ export function ConcertsPage({ lang }: { lang: Lang }) {
                   </td>
                   <td>
                     <span className={a.rowActions}>
-                      <Link to={`/admin/koncerti/${concert.id}`} className="btn btn-quiet">
+                      <Link to={`/admin/concerts/${concert.id}`} className="btn btn-quiet">
                         {en ? "Edit" : "Редактирай"}
                       </Link>
                       {/* remove() handles its own failure, so there is nothing

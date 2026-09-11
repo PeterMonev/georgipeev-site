@@ -108,7 +108,7 @@ export function ConcertForm({ lang, concert }: { lang: Lang; concert?: ConcertAd
     try {
       if (concert === undefined) {
         await createConcert(input);
-        navigate("/admin/koncerti");
+        navigate("/admin/concerts");
         return;
       }
 
@@ -165,7 +165,7 @@ export function ConcertForm({ lang, concert }: { lang: Lang; concert?: ConcertAd
           required
         />
       </label>
-      <small className={f.hint}>/koncerti/{slug}</small>
+      <small className={f.hint}>/concerts/{slug}</small>
       <FieldError messages={errors.slug} />
 
       <LocalizedField

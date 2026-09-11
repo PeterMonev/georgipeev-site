@@ -37,7 +37,7 @@ export function ConcertList({ lang }: { lang: Lang }) {
 
             return (
               <li key={concert.slug}>
-                <Link to={`/koncerti/${concert.slug}`} className={styles.gig}>
+                <Link to={`/concerts/${concert.slug}`} className={styles.gig}>
                   <time dateTime={concert.startsAt} className={styles.when}>
                     <span className={styles.day}>{when.day}</span>
                     <span className={styles.month}>

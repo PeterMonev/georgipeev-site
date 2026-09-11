@@ -22,7 +22,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<ConcertList lang={lang} />} />
 
-          <Route path="/koncerti/:slug" element={<ConcertPage lang={lang} />} />
+          <Route path="/concerts/:slug" element={<ConcertPage lang={lang} />} />
 
           <Route path="/admin/login" element={<LoginPage lang={lang} />} />
 
@@ -30,10 +30,10 @@ export default function App() {
               RequireAuth has no path of its own — it is a gate, not a page. */}
           <Route element={<RequireAuth />}>
             <Route path="/admin" element={<AdminHome lang={lang} />} />
-            <Route path="/admin/parola" element={<ChangePasswordPage lang={lang} />} />
-            <Route path="/admin/koncerti" element={<ConcertsPage lang={lang} />} />
-            <Route path="/admin/koncerti/nov" element={<NewConcertPage lang={lang} />} />
-            <Route path="/admin/koncerti/:id" element={<EditConcertPage lang={lang} />} />
+            <Route path="/admin/password" element={<ChangePasswordPage lang={lang} />} />
+            <Route path="/admin/concerts" element={<ConcertsPage lang={lang} />} />
+            <Route path="/admin/concerts/new" element={<NewConcertPage lang={lang} />} />
+            <Route path="/admin/concerts/:id" element={<EditConcertPage lang={lang} />} />
           </Route>
 
           <Route

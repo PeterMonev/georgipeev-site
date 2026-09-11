@@ -17,7 +17,7 @@ export function EditConcertPage({ lang }: { lang: Lang }) {
       return (
         <p>
           {en ? "There is no such concert." : "Няма такъв концерт."}{" "}
-          <Link to="/admin/koncerti">{en ? "Back to the list" : "Към списъка"}</Link>
+          <Link to="/admin/concerts">{en ? "Back to the list" : "Към списъка"}</Link>
         </p>
       );
 

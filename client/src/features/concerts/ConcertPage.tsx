@@ -8,7 +8,7 @@ export function ConcertPage({ lang }: { lang: Lang }) {
   const en = lang === "en";
 
   // useParams reads the placeholders from the route pattern. Even though the
-  // route is "/koncerti/:slug" and slug cannot really be missing, the type is
+  // route is "/concerts/:slug" and slug cannot really be missing, the type is
   // string | undefined: the hook has no idea which route rendered this
   // component, so it cannot promise the parameter exists.
   const { slug } = useParams<{ slug: string }>();

@@ -35,10 +35,10 @@ export function AdminHome({ lang }: { lang: Lang }) {
 
       <ul className={a.links}>
         <li>
-          <Link to="/admin/koncerti">{en ? "Concerts" : "Концерти"}</Link>
+          <Link to="/admin/concerts">{en ? "Concerts" : "Концерти"}</Link>
         </li>
         <li>
-          <Link to="/admin/parola">{en ? "Change password" : "Смяна на паролата"}</Link>
+          <Link to="/admin/password">{en ? "Change password" : "Смяна на паролата"}</Link>
         </li>
       </ul>
     </section>
