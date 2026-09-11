@@ -85,13 +85,14 @@ internal static class AuthEndpoints
         if (!result.Succeeded)
         {
             // Identity reports errors by code. One of them is about the current
-            // password; every other one is about the new one. The browser shows
-            // each message under the field it belongs to.
+            // password; every other one is about the new one. The browser gets
+            // the codes, not Identity's English sentences: it knows which
+            // language the person is reading, the server does not.
             var errors = result.Errors
                 .GroupBy(e => e.Code == nameof(IdentityErrorDescriber.PasswordMismatch)
                     ? "currentPassword"
                     : "newPassword")
-                .ToDictionary(g => g.Key, g => g.Select(e => e.Description).ToArray());
+                .ToDictionary(g => g.Key, g => g.Select(e => e.Code).ToArray());
 
             return TypedResults.ValidationProblem(errors);
         }

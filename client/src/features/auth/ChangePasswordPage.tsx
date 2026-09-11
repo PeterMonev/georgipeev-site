@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { changePassword } from "../../api/auth";
 import { ApiError, type FieldErrors } from "../../api/client";
 import type { Lang } from "../../api/types";
+import { translateIdentityErrors } from "./identityMessages";
 
 type Outcome =
   | { status: "idle" }
@@ -41,11 +42,11 @@ export function ChangePasswordPage({ lang }: { lang: Lang }) {
       setConfirmation("");
       setOutcome({ status: "done" });
     } catch (caught: unknown) {
-      // A 400 carries messages per field. Anything else gets one generic line
-      // under the form, keyed like a field so it renders the same way.
+      // A 400 carries error codes per field. Anything else gets one generic
+      // line under the form, keyed like a field so it renders the same way.
       const failure: FieldErrors =
         caught instanceof ApiError && caught.status === 400
-          ? caught.errors
+          ? translateIdentityErrors(caught.errors, lang)
           : {
               form: [
                 en ? "Could not change the password. Try again." : "Смяната не се получи. Опитай пак.",
