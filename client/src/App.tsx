@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link, Route, Routes } from "react-router";
+import { Route, Routes } from "react-router";
 import type { Lang } from "./api/types";
+import { Layout } from "./components/Layout";
 import { AdminHome } from "./features/admin/AdminHome";
 import { ConcertsPage } from "./features/admin/concerts/ConcertsPage";
 import { EditConcertPage } from "./features/admin/concerts/EditConcertPage";
@@ -17,25 +18,9 @@ export default function App() {
 
   return (
     <AuthProvider>
-      <main>
-        <h1>
-          <Link to="/">Георги Пеев</Link>
-        </h1>
-
-        <button type="button" onClick={() => setLang(lang === "bg" ? "en" : "bg")}>
-          {lang === "bg" ? "English" : "Български"}
-        </button>
-
+      <Layout lang={lang} onLang={setLang}>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <h2>{lang === "en" ? "Upcoming" : "Предстоящи участия"}</h2>
-                <ConcertList lang={lang} />
-              </>
-            }
-          />
+          <Route path="/" element={<ConcertList lang={lang} />} />
 
           <Route path="/koncerti/:slug" element={<ConcertPage lang={lang} />} />
 
@@ -56,7 +41,7 @@ export default function App() {
             element={<h2>{lang === "en" ? "Page not found" : "Страницата я няма"}</h2>}
           />
         </Routes>
-      </main>
+      </Layout>
     </AuthProvider>
   );
 }

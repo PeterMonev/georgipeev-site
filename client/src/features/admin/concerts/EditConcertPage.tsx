@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router";
 import type { Lang } from "../../../api/types";
+import a from "../../../styles/admin.module.css";
 import { ConcertForm } from "./ConcertForm";
 import { useAdminConcert } from "./useAdminConcert";
 
@@ -26,7 +27,12 @@ export function EditConcertPage({ lang }: { lang: Lang }) {
     case "ready":
       return (
         <section>
-          <h2>{en ? "Edit concert" : "Редакция на концерт"}</h2>
+          <div className={a.head}>
+            <div>
+              <p className="kicker">{en ? "Concerts" : "Концерти"}</p>
+              <h2>{en ? "Edit concert" : "Редакция на концерт"}</h2>
+            </div>
+          </div>
           {/* The form reads its initial values once. Keying it by id makes
               React build a fresh form if the route changes to another concert
               instead of showing the old values under the new address. */}

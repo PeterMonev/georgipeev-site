@@ -1,0 +1,242 @@
+/*
+ * Element defaults and the few primitives every page shares. Anything that
+ * belongs to one component lives in that component's .module.css instead.
+ */
+@import "./tokens.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: var(--fs-3);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+
+  /* The coloured glow behind everything: painted once, fixed, never moves. */
+  &::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      linear-gradient(
+        96deg,
+        color-mix(in srgb, var(--o1) 34%, transparent) 0%,
+        color-mix(in srgb, var(--o1) 8%, transparent) 34%,
+        rgba(0, 0, 0, 0) 58%
+      ),
+      radial-gradient(64vw 64vw at 0% -8%, var(--o1), transparent 62%),
+      radial-gradient(56vw 56vw at 97% 16%, var(--o2), transparent 62%),
+      radial-gradient(68vw 68vw at 16% 104%, var(--o3), transparent 64%),
+      radial-gradient(44vw 44vw at 88% 90%, var(--o4), transparent 60%),
+      var(--bg);
+  }
+}
+
+/* React renders into #root: header, page and footer stacked, the page
+   stretching so the footer stays at the bottom of short pages. */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+p {
+  margin: 0 0 1.05em;
+  text-wrap: pretty;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  font-weight: var(--w-reg);
+  line-height: 0.96;
+  letter-spacing: -0.018em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--fs-8);
+}
+
+h2 {
+  font-size: var(--fs-7);
+}
+
+h3 {
+  font-size: var(--fs-5);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 32%, transparent);
+  color: var(--text);
+}
+
+/* ---------- primitives: the same in every feature, so they live here ---------- */
+
+/* A small mono label above a title or a field. */
+.kicker {
+  font-family: var(--mono);
+  font-size: var(--fs-1);
+  font-weight: var(--w-med);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* Frosted glass over the glow. */
+.glass {
+  background: var(--glass), var(--tint);
+  border: 1px solid var(--brd);
+  box-shadow: var(--sh), var(--hi);
+  -webkit-backdrop-filter: blur(12px) saturate(1.5);
+  backdrop-filter: blur(12px) saturate(1.5);
+}
+
+.panel {
+  border-radius: var(--r);
+  padding: clamp(20px, 3.4vw, 54px);
+}
+
+/* Pill button: mono caps, and on hover a glow that rises from below. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--brd-2);
+  border-radius: 999px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: var(--fs-1);
+  font-weight: var(--w-med);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 14px 28px;
+  cursor: pointer;
+  transition:
+    color 0.45s,
+    background 0.45s,
+    border-color 0.45s,
+    box-shadow var(--t-mov),
+    transform var(--t-mov) var(--ez);
+
+  /* The glow itself: sits below the text, hidden until hover. */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0;
+    transform: translateY(26%);
+    background: linear-gradient(
+      0deg,
+      color-mix(in srgb, var(--accent) 34%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 10%, transparent) 38%,
+      rgba(255, 255, 255, 0) 68%
+    );
+    transition:
+      opacity 0.45s,
+      transform var(--t-mov) var(--ez);
+  }
+
+  &:hover {
+    color: #fff;
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.11);
+    transform: translateY(-2px);
+    box-shadow:
+      0 12px 26px -16px color-mix(in srgb, var(--accent) 62%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--accent) 26%, transparent);
+
+    &::before {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+    transition-duration: 0.09s;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: default;
+    transform: none;
+  }
+}
+
+/* The quiet variant: a text link that still reads as an action. */
+.btn-quiet {
+  background: transparent;
+  border-color: transparent;
+  color: var(--dim);
+  padding-inline: 14px;
+}
+
+.btn-danger:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+  box-shadow: none;
+
+  &::before {
+    opacity: 0;
+  }
+}
+
+/* Messages the server or the form has for the person. */
+.alert {
+  margin: 6px 0 0;
+  font-size: var(--fs-2);
+  color: var(--danger);
+}
+
+.status {
+  margin: 6px 0 0;
+  font-size: var(--fs-2);
+  color: var(--ok);
+}

@@ -1,0 +1,75 @@
+/*
+ * The design system, lifted from the mockup. Every colour, size, radius and
+ * duration in the app is one of these — components never write a raw number.
+ * Change a value here and the whole site follows.
+ */
+:root {
+  /* palette */
+  --bg: #140a18;
+  --bg-2: #1d0f24;
+  --text: #fff4ee;
+  --dim: #ebd0c8;
+  --muted: #c7adb2;
+  --accent: #ee8544;
+  --accent-ink: #180b1c;
+  --tint: rgba(22, 10, 28, 0.52);
+  --o1: rgba(255, 132, 48, 0.88);
+  --o2: rgba(255, 60, 148, 0.92);
+  --o3: rgba(150, 44, 245, 0.82);
+  --o4: color-mix(in srgb, var(--o3) 66%, #170824);
+  --pink: var(--o2);
+  --violet: var(--o3);
+  --danger: #ff7a7a;
+  --ok: #8fe3b0;
+
+  /* glass */
+  --glass:
+    radial-gradient(128% 88% at 6% -10%, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 54%),
+    linear-gradient(
+      96deg,
+      color-mix(in srgb, var(--accent) 20%, transparent) 0%,
+      color-mix(in srgb, var(--pink) 11%, transparent) 40%,
+      color-mix(in srgb, var(--violet) 19%, transparent) 100%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+  --line: rgba(255, 255, 255, 0.13);
+  --line-2: rgba(255, 255, 255, 0.2);
+  --brd: rgba(255, 255, 255, 0.22);
+  --brd-2: rgba(255, 255, 255, 0.28);
+  --hi: inset 0 1px 0 rgba(255, 255, 255, 0.36), inset 0 -16px 38px -24px rgba(255, 255, 255, 0.16);
+  --sh:
+    0 26px 70px -26px rgba(0, 0, 0, 0.7),
+    0 10px 44px -22px color-mix(in srgb, var(--violet) 40%, transparent),
+    -14px 8px 40px -26px color-mix(in srgb, var(--accent) 42%, transparent);
+
+  /* four radii: hero, panels, cards and rows, small things inside cards */
+  --r-lg: 34px;
+  --r: 24px;
+  --r-sm: 14px;
+  --r-xs: 8px;
+
+  /* type: nine steps, each with a job */
+  --display: "Prata", "Times New Roman", serif;
+  --body: "Golos Text", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  --fs-0: 9.5px; /* micro labels, mono */
+  --fs-1: 10.5px; /* labels, buttons, menu */
+  --fs-2: 13px; /* meta and small text */
+  --fs-3: 15.5px; /* body text */
+  --fs-4: clamp(17px, 1.5vw, 20px); /* lede, the brand */
+  --fs-5: clamp(19px, 2vw, 26px); /* card and row titles */
+  --fs-6: clamp(26px, 3.2vw, 42px); /* numbers and quotes */
+  --fs-7: clamp(30px, 4.4vw, 58px); /* section titles */
+  --fs-8: clamp(34px, 5.6vw, 76px); /* page titles */
+  --w-reg: 400;
+  --w-med: 500;
+
+  /* motion: one rhythm for the whole site */
+  --ez: cubic-bezier(0.22, 0.78, 0.2, 1);
+  --t-col: 0.34s;
+  --t-mov: 0.55s;
+
+  /* layout */
+  --pad: clamp(14px, 3.4vw, 52px);
+  --maxw: 1360px;
+}

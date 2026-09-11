@@ -1,0 +1,41 @@
+.article {
+  max-width: 72ch;
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: clamp(18px, 3vw, 34px);
+  font-family: var(--mono);
+  font-size: var(--fs-1);
+  font-weight: var(--w-med);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dim);
+  transition: color var(--t-col);
+
+  &:hover {
+    color: var(--accent);
+  }
+}
+
+.title {
+  font-size: var(--fs-8);
+  margin: 10px 0 14px;
+}
+
+.meta {
+  font-size: var(--fs-4);
+  color: var(--dim);
+  margin-bottom: clamp(22px, 3vw, 40px);
+}
+
+.description {
+  font-size: var(--fs-4);
+  line-height: 1.55;
+  color: var(--dim);
+  white-space: pre-line;
+}
+
+.actions {
+  margin-top: clamp(22px, 3vw, 40px);
+}

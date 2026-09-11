@@ -1,0 +1,118 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid var(--brd);
+  /* Glass over the page as it scrolls under; the tint keeps text readable. */
+  background: var(--glass), var(--tint);
+  -webkit-backdrop-filter: blur(12px) saturate(1.5);
+  backdrop-filter: blur(12px) saturate(1.5);
+}
+
+.bar {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 14px var(--pad);
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2vw, 28px);
+}
+
+.brand {
+  font-family: var(--display);
+  font-size: var(--fs-4);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.nav {
+  display: flex;
+  gap: clamp(13px, 1.7vw, 24px);
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: var(--fs-1);
+  font-weight: var(--w-med);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+
+  a {
+    position: relative;
+    padding: 5px 0;
+    color: var(--dim);
+    transition: color var(--t-col);
+
+    /* The underline grows from the left on hover, stays under the current page. */
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--t-mov) var(--ez);
+    }
+
+    &:hover,
+    &[aria-current="page"] {
+      color: var(--text);
+
+      &::after {
+        transform: scaleX(1);
+      }
+    }
+  }
+}
+
+.lang {
+  display: flex;
+  border: 1px solid var(--brd-2);
+  border-radius: 999px;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: var(--fs-1);
+  font-weight: var(--w-med);
+
+  button {
+    background: none;
+    border: 0;
+    color: var(--dim);
+    padding: 6px 12px;
+    cursor: pointer;
+    transition:
+      background var(--t-col),
+      color var(--t-col);
+
+    &:hover {
+      color: var(--text);
+    }
+
+    &[aria-pressed="true"] {
+      background: var(--text);
+      color: var(--bg);
+    }
+  }
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: clamp(28px, 5vw, 72px) var(--pad) clamp(40px, 8vw, 120px);
+}
+
+.footer {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 24px var(--pad) 40px;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: var(--fs-1);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}

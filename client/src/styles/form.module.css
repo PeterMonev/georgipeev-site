@@ -1,0 +1,116 @@
+/* One look for every form: sign-in, password, concerts. Imported by each. */
+
+.form {
+  display: grid;
+  gap: 18px;
+  max-width: 720px;
+}
+
+/* A narrow form — sign-in, password — sits in a card of its own. */
+.card {
+  composes: form;
+  max-width: 440px;
+  margin: clamp(20px, 6vw, 80px) auto 0;
+}
+
+.title {
+  margin-bottom: 6px;
+}
+
+.field {
+  display: block;
+
+  > span {
+    display: block;
+    font-family: var(--mono);
+    font-size: var(--fs-0);
+    font-weight: var(--w-med);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 7px;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid var(--brd);
+    border-radius: var(--r-sm);
+    color: var(--text);
+    padding: 13px 15px;
+    font-family: var(--body);
+    font-size: var(--fs-3);
+    transition:
+      border-color var(--t-col),
+      background var(--t-col);
+
+    &::placeholder {
+      color: var(--muted);
+    }
+
+    &:focus {
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.11);
+      outline: none;
+    }
+  }
+
+  textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+}
+
+/* A field with a Bulgarian and an English half, side by side when there is room. */
+.pair {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.legend {
+  display: block;
+  font-family: var(--mono);
+  font-size: var(--fs-0);
+  font-weight: var(--w-med);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+
+.halves {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.hint {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: var(--fs-2);
+  color: var(--muted);
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+
+  input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 6px;
+}

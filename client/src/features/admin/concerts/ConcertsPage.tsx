@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { deleteConcert } from "../../../api/adminConcerts";
 import type { ConcertAdminListItem, Lang } from "../../../api/types";
+import a from "../../../styles/admin.module.css";
 import { formatWhen } from "../../concerts/formatWhen";
 import { useAdminConcerts } from "./useAdminConcerts";
 
@@ -26,17 +27,28 @@ export function ConcertsPage({ lang }: { lang: Lang }) {
 
   return (
     <section>
-      <h2>{en ? "Concerts" : "Концерти"}</h2>
-      <p>
-        <Link to="/admin/koncerti/nov">{en ? "New concert" : "Нов концерт"}</Link>
-      </p>
+      <div className={a.head}>
+        <div>
+          <p className="kicker">{en ? "Admin" : "Админ"}</p>
+          <h2>{en ? "Concerts" : "Концерти"}</h2>
+        </div>
+        <Link to="/admin/koncerti/nov" className="btn">
+          {en ? "New concert" : "Нов концерт"}
+        </Link>
+      </div>
 
-      {problem && <p role="alert">{problem}</p>}
+      {problem && (
+        <p role="alert" className="alert">
+          {problem}
+        </p>
+      )}
 
       {state.status === "loading" && <p>{en ? "Loading…" : "Зарежда се…"}</p>}
 
       {state.status === "error" && (
-        <p role="alert">{en ? "Could not load concerts." : "Концертите не се заредиха."}</p>
+        <p role="alert" className="alert">
+          {en ? "Could not load concerts." : "Концертите не се заредиха."}
+        </p>
       )}
 
       {state.status === "ready" && state.concerts.length === 0 && (
@@ -44,41 +56,53 @@ export function ConcertsPage({ lang }: { lang: Lang }) {
       )}
 
       {state.status === "ready" && state.concerts.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th>{en ? "When" : "Кога"}</th>
-              <th>{en ? "Venue" : "Зала"}</th>
-              <th>{en ? "City" : "Град"}</th>
-              <th>{en ? "Status" : "Статус"}</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {state.concerts.map((concert) => (
-              <tr key={concert.id}>
-                <td>
-                  <time dateTime={concert.startsAt}>{formatWhen(concert.startsAt, lang)}</time>
-                </td>
-                <td>{concert.venue}</td>
-                <td>{concert.city}</td>
-                <td>
-                  {concert.isPublished
-                    ? en ? "Published" : "Публикуван"
-                    : en ? "Draft" : "Чернова"}
-                </td>
-                <td>
-                  <Link to={`/admin/koncerti/${concert.id}`}>{en ? "Edit" : "Редактирай"}</Link>{" "}
-                  {/* remove() handles its own failure, so there is nothing
-                      left for the caller to await — void says so. */}
-                  <button type="button" onClick={() => void remove(concert)}>
-                    {en ? "Delete" : "Изтрий"}
-                  </button>
-                </td>
+        <div className={a.wrap}>
+          <table className={a.table}>
+            <thead>
+              <tr>
+                <th>{en ? "When" : "Кога"}</th>
+                <th>{en ? "Venue" : "Зала"}</th>
+                <th>{en ? "City" : "Град"}</th>
+                <th>{en ? "Status" : "Статус"}</th>
+                <th />
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {state.concerts.map((concert) => (
+                <tr key={concert.id}>
+                  <td>
+                    <time dateTime={concert.startsAt}>{formatWhen(concert.startsAt, lang)}</time>
+                  </td>
+                  <td>{concert.venue}</td>
+                  <td>{concert.city}</td>
+                  <td>
+                    <span className={`${a.badge} ${concert.isPublished ? a.published : ""}`}>
+                      {concert.isPublished
+                        ? en ? "Published" : "Публикуван"
+                        : en ? "Draft" : "Чернова"}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={a.rowActions}>
+                      <Link to={`/admin/koncerti/${concert.id}`} className="btn btn-quiet">
+                        {en ? "Edit" : "Редактирай"}
+                      </Link>
+                      {/* remove() handles its own failure, so there is nothing
+                          left for the caller to await — void says so. */}
+                      <button
+                        type="button"
+                        className="btn btn-quiet btn-danger"
+                        onClick={() => void remove(concert)}
+                      >
+                        {en ? "Delete" : "Изтрий"}
+                      </button>
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </section>
   );

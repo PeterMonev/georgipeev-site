@@ -2,9 +2,11 @@ import { useState, type FormEvent } from "react";
 import { Navigate, useNavigate } from "react-router";
 import { ApiError } from "../../api/client";
 import type { Lang } from "../../api/types";
+import f from "../../styles/form.module.css";
 import { useAuth } from "./useAuth";
 
 export function LoginPage({ lang }: { lang: Lang }) {
+  const en = lang === "en";
   const { state, signIn } = useAuth();
   const navigate = useNavigate();
 
@@ -34,10 +36,10 @@ export function LoginPage({ lang }: { lang: Lang }) {
       // Anything else is a real failure and the user deserves to know.
       const message =
         caught instanceof ApiError && caught.status === 401
-          ? lang === "en"
+          ? en
             ? "Wrong email or password."
             : "Грешен имейл или парола."
-          : lang === "en"
+          : en
             ? "Could not sign in. Try again."
             : "Входът не се получи. Опитай пак.";
 
@@ -48,11 +50,14 @@ export function LoginPage({ lang }: { lang: Lang }) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>{lang === "en" ? "Sign in" : "Вход"}</h2>
+    <form onSubmit={handleSubmit} className={`${f.card} glass panel`}>
+      <div className={f.title}>
+        <p className="kicker">{en ? "Admin" : "Админ"}</p>
+        <h2>{en ? "Sign in" : "Вход"}</h2>
+      </div>
 
-      <label>
-        {lang === "en" ? "Email" : "Имейл"}
+      <label className={f.field}>
+        <span>{en ? "Email" : "Имейл"}</span>
         <input
           type="email"
           value={email}
@@ -62,8 +67,8 @@ export function LoginPage({ lang }: { lang: Lang }) {
         />
       </label>
 
-      <label>
-        {lang === "en" ? "Password" : "Парола"}
+      <label className={f.field}>
+        <span>{en ? "Password" : "Парола"}</span>
         <input
           type="password"
           value={password}
@@ -73,13 +78,19 @@ export function LoginPage({ lang }: { lang: Lang }) {
         />
       </label>
 
-      {error && <p role="alert">{error}</p>}
+      {error && (
+        <p role="alert" className="alert">
+          {error}
+        </p>
+      )}
 
-      <button type="submit" disabled={isSubmitting}>
-        {isSubmitting
-          ? lang === "en" ? "Signing in…" : "Влизане…"
-          : lang === "en" ? "Sign in" : "Вход"}
-      </button>
+      <div className={f.actions}>
+        <button type="submit" className="btn" disabled={isSubmitting}>
+          {isSubmitting
+            ? en ? "Signing in…" : "Влизане…"
+            : en ? "Sign in" : "Вход"}
+        </button>
+      </div>
     </form>
   );
 }

@@ -2,5 +2,7 @@
 export function FieldError({ messages }: { messages: string[] | undefined }) {
   if (messages === undefined || messages.length === 0) return null;
 
-  return <p role="alert">{messages.join(" ")}</p>;
+  return <p role="alert" className="alert">
+      {messages.join(" ")}
+    </p>;
 }

@@ -4,6 +4,7 @@ import { ApiError, type FieldErrors } from "../../api/client";
 import { translateErrors } from "../../api/errorMessages";
 import type { Lang } from "../../api/types";
 import { FieldError } from "../../components/FieldError";
+import f from "../../styles/form.module.css";
 
 type Outcome =
   | { status: "idle" }
@@ -59,11 +60,14 @@ export function ChangePasswordPage({ lang }: { lang: Lang }) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>{en ? "Change password" : "Смяна на паролата"}</h2>
+    <form onSubmit={handleSubmit} className={`${f.card} glass panel`}>
+      <div className={f.title}>
+        <p className="kicker">{en ? "Admin" : "Админ"}</p>
+        <h2>{en ? "Change password" : "Смяна на паролата"}</h2>
+      </div>
 
-      <label>
-        {en ? "Current password" : "Сегашна парола"}
+      <label className={f.field}>
+        <span>{en ? "Current password" : "Сегашна парола"}</span>
         <input
           type="password"
           value={currentPassword}
@@ -74,8 +78,8 @@ export function ChangePasswordPage({ lang }: { lang: Lang }) {
       </label>
       <FieldError messages={errors.currentPassword} />
 
-      <label>
-        {en ? "New password" : "Нова парола"}
+      <label className={f.field}>
+        <span>{en ? "New password" : "Нова парола"}</span>
         {/* minLength mirrors the server rule for instant feedback; the server
             still decides. */}
         <input
@@ -89,8 +93,8 @@ export function ChangePasswordPage({ lang }: { lang: Lang }) {
       </label>
       <FieldError messages={errors.newPassword} />
 
-      <label>
-        {en ? "New password again" : "Новата парола още веднъж"}
+      <label className={f.field}>
+        <span>{en ? "New password again" : "Новата парола още веднъж"}</span>
         <input
           type="password"
           value={confirmation}
@@ -104,14 +108,18 @@ export function ChangePasswordPage({ lang }: { lang: Lang }) {
       <FieldError messages={errors.form} />
 
       {outcome.status === "done" && (
-        <p role="status">{en ? "The password is changed." : "Паролата е сменена."}</p>
+        <p role="status" className="status">
+          {en ? "The password is changed." : "Паролата е сменена."}
+        </p>
       )}
 
-      <button type="submit" disabled={outcome.status === "submitting"}>
-        {outcome.status === "submitting"
-          ? en ? "Saving…" : "Запис…"
-          : en ? "Change" : "Смени"}
-      </button>
+      <div className={f.actions}>
+        <button type="submit" className="btn" disabled={outcome.status === "submitting"}>
+          {outcome.status === "submitting"
+            ? en ? "Saving…" : "Запис…"
+            : en ? "Change" : "Смени"}
+        </button>
+      </div>
     </form>
   );
 }

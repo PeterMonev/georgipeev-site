@@ -5,6 +5,7 @@ import { ApiError, type FieldErrors } from "../../../api/client";
 import { translateErrors } from "../../../api/errorMessages";
 import type { ConcertAdminDetail, ConcertInput, Lang, Localized } from "../../../api/types";
 import { FieldError } from "../../../components/FieldError";
+import f from "../../../styles/form.module.css";
 import { suggestSlug } from "./slugify";
 import { fromSofiaLocal, toSofiaLocal } from "./sofiaTime";
 
@@ -122,9 +123,9 @@ export function ConcertForm({ lang, concert }: { lang: Lang; concert?: ConcertAd
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        {en ? "Date and time (Sofia)" : "Дата и час (София)"}
+    <form onSubmit={handleSubmit} className={f.form}>
+      <label className={f.field}>
+        <span>{en ? "Date and time (Sofia)" : "Дата и час (София)"}</span>
         <input
           type="datetime-local"
           value={values.startsAt}
@@ -152,8 +153,8 @@ export function ConcertForm({ lang, concert }: { lang: Lang; concert?: ConcertAd
         required
       />
 
-      <label>
-        {en ? "Address" : "Адрес"}
+      <label className={f.field}>
+        <span>{en ? "Address" : "Адрес"}</span>
         {/* The browser checks the same rule the server does, so the usual
             mistake — a capital letter, a space — is caught before sending. */}
         <input
@@ -164,7 +165,7 @@ export function ConcertForm({ lang, concert }: { lang: Lang; concert?: ConcertAd
           required
         />
       </label>
-      <small>/koncerti/{slug}</small>
+      <small className={f.hint}>/koncerti/{slug}</small>
       <FieldError messages={errors.slug} />
 
       <LocalizedField
@@ -184,8 +185,8 @@ export function ConcertForm({ lang, concert }: { lang: Lang; concert?: ConcertAd
         multiline
       />
 
-      <label>
-        {en ? "Ticket link" : "Линк за билети"}
+      <label className={f.field}>
+        <span>{en ? "Ticket link" : "Линк за билети"}</span>
         <input
           type="url"
           value={values.ticketUrl}
@@ -195,7 +196,7 @@ export function ConcertForm({ lang, concert }: { lang: Lang; concert?: ConcertAd
       </label>
       <FieldError messages={errors.ticketUrl} />
 
-      <label>
+      <label className={f.check}>
         <input
           type="checkbox"
           checked={values.isPublished}
@@ -205,13 +206,19 @@ export function ConcertForm({ lang, concert }: { lang: Lang; concert?: ConcertAd
       </label>
 
       <FieldError messages={errors.form} />
-      {outcome.status === "saved" && <p role="status">{en ? "Saved." : "Записано."}</p>}
+      {outcome.status === "saved" && (
+        <p role="status" className="status">
+          {en ? "Saved." : "Записано."}
+        </p>
+      )}
 
-      <button type="submit" disabled={outcome.status === "submitting"}>
-        {outcome.status === "submitting"
-          ? en ? "Saving…" : "Запис…"
-          : en ? "Save" : "Запази"}
-      </button>
+      <div className={f.actions}>
+        <button type="submit" className="btn" disabled={outcome.status === "submitting"}>
+          {outcome.status === "submitting"
+            ? en ? "Saving…" : "Запис…"
+            : en ? "Save" : "Запази"}
+        </button>
+      </div>
     </form>
   );
 }
@@ -251,10 +258,18 @@ function LocalizedField({
   };
 
   return (
-    <fieldset>
-      <legend>{label}</legend>
-      <label>BG {input("bg")}</label>
-      <label>EN {input("en")}</label>
+    <fieldset className={f.pair}>
+      <legend className={f.legend}>{label}</legend>
+      <div className={f.halves}>
+        <label className={f.field}>
+          <span>БГ</span>
+          {input("bg")}
+        </label>
+        <label className={f.field}>
+          <span>EN</span>
+          {input("en")}
+        </label>
+      </div>
       <FieldError messages={messages} />
     </fieldset>
   );
