@@ -80,3 +80,56 @@ export type ConcertInput = {
   /** 0 for a new concert; the loaded version for an existing one. */
   version: number;
 };
+
+/** Mirrors GeorgiPeev.Web.Features.News.NewsListItem. */
+export type NewsListItem = {
+  slug: string;
+  publishedAt: string;
+  title: string;
+  summary: string;
+  link: string | null;
+};
+
+/** Mirrors GeorgiPeev.Web.Features.News.NewsDetail. */
+export type NewsDetail = {
+  slug: string;
+  publishedAt: string;
+  title: string;
+  summary: string;
+  body: string;
+  link: string | null;
+};
+
+/** Mirrors GeorgiPeev.Web.Features.News.NewsAdminListItem. */
+export type NewsAdminListItem = {
+  id: string;
+  slug: string;
+  publishedAt: string;
+  title: string;
+  isPublished: boolean;
+};
+
+/** Mirrors GeorgiPeev.Web.Features.News.NewsAdminDetail. */
+export type NewsAdminDetail = {
+  id: string;
+  slug: string;
+  publishedAt: string;
+  title: Localized;
+  summary: Localized;
+  body: Localized;
+  link: string | null;
+  isPublished: boolean;
+  version: number;
+};
+
+/** Mirrors GeorgiPeev.Web.Features.News.NewsInput. */
+export type NewsInput = {
+  slug: string;
+  publishedAt: string;
+  title: Localized;
+  summary: Localized;
+  body: Localized;
+  link: string | null;
+  isPublished: boolean;
+  version: number;
+};

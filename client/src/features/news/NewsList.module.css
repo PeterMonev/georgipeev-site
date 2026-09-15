@@ -1,0 +1,87 @@
+.head {
+  margin-bottom: clamp(22px, 3vw, 40px);
+  padding-bottom: clamp(12px, 1.5vw, 20px);
+  border-bottom: 1px solid var(--line);
+
+  h2 {
+    margin-top: 10px;
+  }
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+/* One story: the date above, the title, one line of summary, an arrow. */
+.story {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: clamp(12px, 2.4vw, 32px);
+  align-items: center;
+  padding: clamp(16px, 2vw, 26px) clamp(14px, 1.8vw, 24px);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  transition:
+    background var(--t-col),
+    border-color var(--t-col),
+    transform var(--t-mov) var(--ez),
+    box-shadow var(--t-mov);
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.16);
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--accent) 14%, transparent),
+      color-mix(in srgb, var(--violet) 5%, transparent) 60%,
+      rgba(255, 255, 255, 0)
+    );
+    transform: translateX(9px);
+    box-shadow: 0 26px 52px -26px rgba(0, 0, 0, 0.9);
+
+    h3 {
+      color: var(--accent);
+    }
+  }
+
+  h3 {
+    margin: 6px 0 8px;
+    line-height: 1.1;
+    transition: color var(--t-col);
+  }
+
+  p {
+    margin: 0;
+    font-size: var(--fs-2);
+    color: var(--dim);
+    max-width: 64ch;
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+
+    > :last-child {
+      justify-self: start;
+    }
+  }
+}
+
+.date {
+  font-family: var(--mono);
+  font-size: var(--fs-1);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.empty {
+  padding: clamp(26px, 4vw, 46px);
+  text-align: center;
+  border: 1px dashed var(--line-2);
+  border-radius: var(--r-sm);
+  color: var(--muted);
+}

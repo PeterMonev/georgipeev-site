@@ -37,6 +37,7 @@ export function Layout({
             {state.status === "signedIn" && (
               <NavLink to="/admin">{en ? "Admin" : "Админ"}</NavLink>
             )}
+              <NavLink to="/news">{en ? "News" : "Новини"}</NavLink>
           </nav>
 
           <div className={styles.lang} role="group" aria-label={en ? "Language" : "Език"}>

@@ -12,6 +12,11 @@ import { LoginPage } from "./features/auth/LoginPage";
 import { RequireAuth } from "./features/auth/RequireAuth";
 import { ConcertList } from "./features/concerts/ConcertList";
 import { ConcertPage } from "./features/concerts/ConcertPage";
+import { EditStoryPage } from "./features/admin/news/EditStoryPage";
+import { NewsAdminPage } from "./features/admin/news/NewsAdminPage";
+import { NewStoryPage } from "./features/admin/news/NewStoryPage";
+import { NewsList } from "./features/news/NewsList";
+import { StoryPage } from "./features/news/StoryPage";
 
 export default function App() {
   const [lang, setLang] = useState<Lang>("bg");
@@ -24,6 +29,9 @@ export default function App() {
 
           <Route path="/concerts/:slug" element={<ConcertPage lang={lang} />} />
 
+          <Route path="/news" element={<NewsList lang={lang} />} />
+          <Route path="/news/:slug" element={<StoryPage lang={lang} />} />
+
           <Route path="/admin/login" element={<LoginPage lang={lang} />} />
 
           {/* Everything nested here renders only for a signed-in user.
@@ -34,6 +42,10 @@ export default function App() {
             <Route path="/admin/concerts" element={<ConcertsPage lang={lang} />} />
             <Route path="/admin/concerts/new" element={<NewConcertPage lang={lang} />} />
             <Route path="/admin/concerts/:id" element={<EditConcertPage lang={lang} />} />
+            
+            <Route path="/admin/news" element={<NewsAdminPage lang={lang} />} />
+            <Route path="/admin/news/new" element={<NewStoryPage lang={lang} />} />
+            <Route path="/admin/news/:id" element={<EditStoryPage lang={lang} />} />
           </Route>
 
           <Route

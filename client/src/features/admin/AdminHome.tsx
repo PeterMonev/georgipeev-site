@@ -40,6 +40,9 @@ export function AdminHome({ lang }: { lang: Lang }) {
         <li>
           <Link to="/admin/password">{en ? "Change password" : "Смяна на паролата"}</Link>
         </li>
+                <li>
+          <Link to="/admin/news">{en ? "News" : "Новини"}</Link>
+        </li>
       </ul>
     </section>
   );
