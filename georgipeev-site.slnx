@@ -3,5 +3,6 @@
     <File Path=".editorconfig" />
     <File Path="Directory.Build.props.xml" />
   </Folder>
+  <Project Path="GeorgiPeev.Web.Tests/GeorgiPeev.Web.Tests.csproj" Id="0b29ab06-6f81-45dc-9e98-60dffaf77a64" />
   <Project Path="GeorgiPeev.Web/GeorgiPeev.Web.csproj" />
 </Solution>
