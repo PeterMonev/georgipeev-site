@@ -8,11 +8,12 @@ using Microsoft.AspNetCore.Http;
 namespace GeorgiPeev.Web.Tests.Concerts;
 
 /// <summary>
-/// One TestApp — one container, one server — shared by every test in this
-/// class. Tests never clean up after themselves; instead each one creates
-/// concerts with slugs nobody else uses, so they cannot see each other.
+/// Tests never clean up after themselves; instead each one creates concerts
+/// with slugs nobody else uses, so they cannot see each other — and the one
+/// shared server in the collection never needs resetting.
 /// </summary>
-public sealed class ConcertAdminEndpointsTests(TestApp app) : IClassFixture<TestApp>
+[Collection(SharedApp.Name)]
+public sealed class ConcertAdminEndpointsTests(TestApp app)
 {
     private const string Base = "/api/admin/concerts";
 
