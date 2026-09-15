@@ -1,5 +1,6 @@
 using GeorgiPeev.Web.Features.Auth;
 using GeorgiPeev.Web.Features.Concerts;
+using GeorgiPeev.Web.Features.News;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
     : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>(options)
 {
     public DbSet<Concert> Concerts => Set<Concert>();
+    public DbSet<NewsItem> News = Set<NewsItem>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -1,6 +1,7 @@
 using GeorgiPeev.Web.Data;
 using GeorgiPeev.Web.Features.Auth;
 using GeorgiPeev.Web.Features.Concerts;
+using GeorgiPeev.Web.Features.News;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -115,8 +116,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapAuthEndpoints();
+
 app.MapConcertEndpoints();
 app.MapConcertAdminEndpoints();
+
+app.MapNewsEndpoints();
+app.MapNewsAdminEndpoints();
 
 // Anything that is not a file and not an API route returns index.html.
 // From there the React router decides which page to render.
