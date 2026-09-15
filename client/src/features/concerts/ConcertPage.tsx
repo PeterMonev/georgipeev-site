@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router";
 import type { Lang } from "../../api/types";
-import styles from "./ConcertPage.module.css";
-import { formatWhen } from "./formatWhen";
+import styles from "../../styles/article.module.css";
+import { formatWhen } from "../../lib/dates";
 import { useConcert } from "./useConcert";
 
 export function ConcertPage({ lang }: { lang: Lang }) {

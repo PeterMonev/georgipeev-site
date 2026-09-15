@@ -1,7 +1,6 @@
 using GeorgiPeev.Web.Data;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 
 namespace GeorgiPeev.Web.Features.Concerts;
 
@@ -97,9 +96,9 @@ internal static class ConcertAdminEndpoints
         {
             await db.SaveChangesAsync(cancellationToken);
         }
-        catch (DbUpdateException e) when (IsUniqueViolation(e))
+        catch (DbUpdateException e) when (e.IsUniqueViolation())
         {
-            return SlugTaken();
+            return SlugConflict.Problem();
         }
 
         // 201 with a Location header pointing at the new resource, and the
@@ -141,9 +140,9 @@ internal static class ConcertAdminEndpoints
         {
             return TypedResults.Conflict();
         }
-        catch (DbUpdateException e) when (IsUniqueViolation(e))
+        catch (DbUpdateException e) when (e.IsUniqueViolation())
         {
-            return SlugTaken();
+            return SlugConflict.Problem();
         }
 
         return TypedResults.Ok(ToDetail(db, concert));
@@ -189,19 +188,4 @@ internal static class ConcertAdminEndpoints
     private static ConcertAdminDetail ToDetail(AppDbContext db, Concert c) => new(
         c.Id, c.Slug, c.StartsAt, c.Venue, c.City, c.Note, c.Description,
         c.TicketUrl, c.IsPublished, db.Entry(c).Property<uint>("xmin").CurrentValue);
-
-    /// <summary>
-    /// The unique index on slug is the one rule only the database can enforce:
-    /// two requests can pass every check and still collide. So there is no
-    /// check-then-insert here — we insert, and translate the one failure we
-    /// expect into the same 400 the validator would have produced.
-    /// </summary>
-    private static bool IsUniqueViolation(DbUpdateException e) =>
-        e.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation };
-
-    private static ValidationProblem SlugTaken() =>
-        TypedResults.ValidationProblem(new Dictionary<string, string[]>
-        {
-            [nameof(ConcertInput.Slug)] = ["Taken"],
-        });
 }

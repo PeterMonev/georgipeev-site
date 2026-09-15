@@ -1,4 +1,4 @@
-import type { Lang } from "../../api/types";
+import type { Lang } from "../api/types";
 
 const zone = "Europe/Sofia";
 
@@ -32,4 +32,14 @@ export function formatWhenParts(iso: string, lang: Lang): { day: string; month: 
     month: part({ month: "long" }).slice(0, 3),
     time: part({ hour: "2-digit", minute: "2-digit", hourCycle: "h23" }),
   };
+}
+
+/** A date with no time — a news story is a day, not an instant. */
+export function formatDate(iso: string, lang: Lang): string {
+  return new Intl.DateTimeFormat(locale(lang), {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: zone,
+  }).format(new Date(iso));
 }

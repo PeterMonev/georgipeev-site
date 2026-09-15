@@ -11,7 +11,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
     : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>(options)
 {
     public DbSet<Concert> Concerts => Set<Concert>();
-    public DbSet<NewsItem> News = Set<NewsItem>();
+    public DbSet<NewsItem> News => Set<NewsItem>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -34,10 +34,10 @@ export function Layout({
             <NavLink to="/" end>
               {en ? "Concerts" : "Концерти"}
             </NavLink>
+            <NavLink to="/news">{en ? "News" : "Новини"}</NavLink>
             {state.status === "signedIn" && (
               <NavLink to="/admin">{en ? "Admin" : "Админ"}</NavLink>
             )}
-              <NavLink to="/news">{en ? "News" : "Новини"}</NavLink>
           </nav>
 
           <div className={styles.lang} role="group" aria-label={en ? "Language" : "Език"}>

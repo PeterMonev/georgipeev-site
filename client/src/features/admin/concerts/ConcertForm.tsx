@@ -1,13 +1,14 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
 import { createConcert, updateConcert } from "../../../api/adminConcerts";
 import { ApiError, type FieldErrors } from "../../../api/client";
 import { translateErrors } from "../../../api/errorMessages";
 import type { ConcertAdminDetail, ConcertInput, Lang, Localized } from "../../../api/types";
 import { FieldError } from "../../../components/FieldError";
+import { LocalizedField } from "../../../components/LocalizedField";
 import f from "../../../styles/form.module.css";
-import { suggestSlug } from "./slugify";
-import { fromSofiaLocal, toSofiaLocal } from "./sofiaTime";
+import { suggestSlug } from "../../../lib/slugify";
+import { fromSofiaLocal, toSofiaLocal } from "../../../lib/sofiaTime";
 
 /**
  * What the inputs hold — text everywhere, because inputs speak text. The
@@ -182,7 +183,7 @@ export function ConcertForm({ lang, concert }: { lang: Lang; concert?: ConcertAd
         onChange={(value) => set("description", value)}
         messages={errors.description}
         maxLength={2000}
-        multiline
+        rows={6}
       />
 
       <label className={f.field}>
@@ -220,58 +221,6 @@ export function ConcertForm({ lang, concert }: { lang: Lang; concert?: ConcertAd
         </button>
       </div>
     </form>
-  );
-}
-
-/**
- * Two inputs that behave as one field. `keyof Localized` is the union
- * "bg" | "en" — computed from the type, so it cannot drift from it.
- */
-function LocalizedField({
-  label,
-  value,
-  onChange,
-  messages,
-  maxLength,
-  required = false,
-  multiline = false,
-}: {
-  label: string;
-  value: Localized;
-  onChange: (value: Localized) => void;
-  messages: string[] | undefined;
-  maxLength: number;
-  required?: boolean;
-  multiline?: boolean;
-}) {
-  const input = (key: keyof Localized) => {
-    const shared = {
-      value: value[key],
-      onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-        onChange({ ...value, [key]: event.target.value }),
-      maxLength,
-      // Only the Bulgarian half is ever required — the server rule, mirrored.
-      required: required && key === "bg",
-    };
-
-    return multiline ? <textarea rows={6} {...shared} /> : <input {...shared} />;
-  };
-
-  return (
-    <fieldset className={f.pair}>
-      <legend className={f.legend}>{label}</legend>
-      <div className={f.halves}>
-        <label className={f.field}>
-          <span>БГ</span>
-          {input("bg")}
-        </label>
-        <label className={f.field}>
-          <span>EN</span>
-          {input("en")}
-        </label>
-      </div>
-      <FieldError messages={messages} />
-    </fieldset>
   );
 }
 

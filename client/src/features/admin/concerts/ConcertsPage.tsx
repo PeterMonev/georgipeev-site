@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { deleteConcert } from "../../../api/adminConcerts";
 import type { ConcertAdminListItem, Lang } from "../../../api/types";
 import a from "../../../styles/admin.module.css";
-import { formatWhen } from "../../concerts/formatWhen";
+import { formatWhen } from "../../../lib/dates";
 import { useAdminConcerts } from "./useAdminConcerts";
 
 export function ConcertsPage({ lang }: { lang: Lang }) {
