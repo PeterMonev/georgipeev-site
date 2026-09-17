@@ -1,6 +1,7 @@
 using GeorgiPeev.Web.Features.Auth;
 using GeorgiPeev.Web.Features.Concerts;
 using GeorgiPeev.Web.Features.News;
+using GeorgiPeev.Web.Features.Photos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
 {
     public DbSet<Concert> Concerts => Set<Concert>();
     public DbSet<NewsItem> News => Set<NewsItem>();
+    public DbSet<Photo> Photos => Set<Photo>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

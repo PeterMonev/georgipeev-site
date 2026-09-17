@@ -2,6 +2,9 @@ using GeorgiPeev.Web.Data;
 using GeorgiPeev.Web.Features.Auth;
 using GeorgiPeev.Web.Features.Concerts;
 using GeorgiPeev.Web.Features.News;
+using GeorgiPeev.Web.Features.Photos;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -75,6 +78,17 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddAuthorization();
 
+// Pictures: the storage is an interface with one implementation for now.
+// Production will register R2 here instead, chosen by configuration.
+builder.Services.Configure<PhotoOptions>(builder.Configuration.GetSection(PhotoOptions.Section));
+builder.Services.AddSingleton<IPhotoStorage, DiskPhotoStorage>();
+builder.Services.AddSingleton<PhotoProcessor>();
+
+// The form parser has its own ceiling, separate from ours; raise it to match
+// so a large upload is refused by our code with a code, not by the parser.
+builder.Services.Configure<FormOptions>(options =>
+    options.MultipartBodyLengthLimit = builder.Configuration.GetValue("Photos:MaxUploadBytes", new PhotoOptions().MaxUploadBytes));
+
 // Minimal APIs validate request bodies against their DataAnnotations and
 // answer 400 in the Problem Details format before a handler ever runs.
 builder.Services.AddValidation();
@@ -110,6 +124,21 @@ app.MapGet("/healthz", (TimeProvider clock) =>
 // written after that, so it never appears in the manifest and every asset 404s.
 app.UseStaticFiles();
 
+// Pictures saved to disk are served from /media. Every key is written once
+// and never changed, so the browser may cache a file forever. With R2 this
+// block does nothing: the URLs point at R2 and never reach this server.
+if (app.Services.GetRequiredService<IPhotoStorage>() is DiskPhotoStorage disk)
+{
+    Directory.CreateDirectory(disk.Root);
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(disk.Root),
+        RequestPath = "/media",
+        OnPrepareResponse = context =>
+            context.Context.Response.Headers.CacheControl = "public,max-age=31536000,immutable",
+    });
+}
+
 // Order matters: authentication decodes the cookie into a principal,
 // authorization then checks it against RequireAuthorization on each endpoint.
 app.UseAuthentication();
@@ -122,6 +151,7 @@ app.MapConcertAdminEndpoints();
 
 app.MapNewsEndpoints();
 app.MapNewsAdminEndpoints();
+app.MapPhotoAdminEndpoints();
 
 // Anything that is not a file and not an API route returns index.html.
 // From there the React router decides which page to render.
