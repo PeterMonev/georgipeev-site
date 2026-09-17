@@ -12,6 +12,7 @@ import { LoginPage } from "./features/auth/LoginPage";
 import { RequireAuth } from "./features/auth/RequireAuth";
 import { ConcertList } from "./features/concerts/ConcertList";
 import { ConcertPage } from "./features/concerts/ConcertPage";
+import { GalleryPage } from "./features/gallery/GalleryPage";
 import { EditStoryPage } from "./features/admin/news/EditStoryPage";
 import { NewsAdminPage } from "./features/admin/news/NewsAdminPage";
 import { NewStoryPage } from "./features/admin/news/NewStoryPage";
@@ -33,6 +34,8 @@ export default function App() {
 
           <Route path="/news" element={<NewsList lang={lang} />} />
           <Route path="/news/:slug" element={<StoryPage lang={lang} />} />
+
+          <Route path="/gallery" element={<GalleryPage lang={lang} />} />
 
           <Route path="/admin/login" element={<LoginPage lang={lang} />} />
 

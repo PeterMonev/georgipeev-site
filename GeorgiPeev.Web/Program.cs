@@ -151,6 +151,7 @@ app.MapConcertAdminEndpoints();
 
 app.MapNewsEndpoints();
 app.MapNewsAdminEndpoints();
+app.MapPhotoEndpoints();
 app.MapPhotoAdminEndpoints();
 
 // Anything that is not a file and not an API route returns index.html.
