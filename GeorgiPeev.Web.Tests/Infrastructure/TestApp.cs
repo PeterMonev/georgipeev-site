@@ -20,6 +20,9 @@ public sealed class TestApp : WebApplicationFactory<Program>, IAsyncLifetime
 
     private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:17-alpine").Build();
 
+    /// <summary>Uploaded pictures land here and go away with the container.</summary>
+    private readonly string _mediaRoot = Path.Combine(Path.GetTempPath(), "georgipeev-tests", Guid.NewGuid().ToString("N"));
+
     public TestApp()
     {
         // The auth cookie is marked Secure, and a cookie jar refuses to send
@@ -51,6 +54,7 @@ public sealed class TestApp : WebApplicationFactory<Program>, IAsyncLifetime
         builder.UseSetting("ConnectionStrings:Db", _postgres.GetConnectionString());
         builder.UseSetting("Admins:0:Email", AdminEmail);
         builder.UseSetting("Admins:0:Password", AdminPassword);
+        builder.UseSetting("Photos:DiskRoot", _mediaRoot);
     }
 
     /// <summary>A client that has already signed in and carries the cookie.</summary>
@@ -71,5 +75,6 @@ public sealed class TestApp : WebApplicationFactory<Program>, IAsyncLifetime
     {
         await base.DisposeAsync();
         await _postgres.DisposeAsync();
+        Directory.Delete(_mediaRoot, recursive: true);
     }
 }

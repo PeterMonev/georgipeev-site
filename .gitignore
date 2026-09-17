@@ -372,8 +372,13 @@ GeorgiPeev.Web/wwwroot/*
 # ---- source photos ----
 # Originals from the artist. Binary, heavy, and headed for object storage.
 # Git would keep every version of every one of them forever.
-photos/
+# Anchored with the leading slash: without it the rule would also swallow
+# Features/Photos on Windows, where Git ignores letter case.
+/photos/
 
 # ---- local tooling ----
 .idea/
 *.DotSettings.user
+
+# ---- uploaded pictures (development) ----
+GeorgiPeev.Web/App_Data/
