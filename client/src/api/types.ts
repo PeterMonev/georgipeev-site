@@ -141,6 +141,16 @@ export type PhotoUrls = {
   large: string;
 };
 
+/** Mirrors GeorgiPeev.Web.Features.Photos.PhotoItem — the public gallery, one language. */
+export type PhotoItem = {
+  alt: string;
+  width: number;
+  height: number;
+  focusX: number;
+  focusY: number;
+  urls: PhotoUrls;
+};
+
 /** Mirrors GeorgiPeev.Web.Features.Photos.PhotoAdminItem. */
 export type PhotoAdminItem = {
   id: string;

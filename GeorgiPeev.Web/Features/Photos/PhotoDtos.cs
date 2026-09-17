@@ -6,6 +6,15 @@ namespace GeorgiPeev.Web.Features.Photos;
 /// <summary>The three variants, ready for srcset. Built from keys at request time, never stored.</summary>
 public sealed record PhotoUrls(string Small, string Medium, string Large);
 
+/// <summary>What the public gallery receives: one language, no id — nothing to link to.</summary>
+public sealed record PhotoItem(
+    string Alt,
+    int Width,
+    int Height,
+    double FocusX,
+    double FocusY,
+    PhotoUrls Urls);
+
 public sealed record PhotoAdminItem(
     Guid Id,
     Localized Alt,

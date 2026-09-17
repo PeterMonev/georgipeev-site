@@ -143,6 +143,29 @@ public sealed class PhotoAdminEndpointsTests(TestApp app)
         Assert.Equal(reversed, ours);
     }
 
+    [Fact]
+    public async Task Only_published_pictures_reach_the_public_gallery()
+    {
+        var client = await app.SignedInClientAsync();
+        var shownResponse = await client.PostAsync(Base, Picture(500, 400), Cancel);
+        var shown = await shownResponse.Content.ReadFromJsonAsync<PhotoAdminItem>(Cancel);
+        var hiddenResponse = await client.PostAsync(Base, Picture(500, 400), Cancel);
+        var hidden = await hiddenResponse.Content.ReadFromJsonAsync<PhotoAdminItem>(Cancel);
+        Assert.NotNull(shown);
+        Assert.NotNull(hidden);
+        await client.PutAsJsonAsync($"{Base}/{shown.Id}", new PhotoUpdate(new Localized("Сцена", ""), 0.5, 0.5, true), Cancel);
+        await client.PutAsJsonAsync($"{Base}/{hidden.Id}", new PhotoUpdate(new Localized("", ""), 0.5, 0.5, false), Cancel);
+
+        // Anyone can read the gallery; nobody needs to sign in.
+        var gallery = await app.CreateClient().GetFromJsonAsync<List<PhotoItem>>("/api/photos?lang=en", Cancel);
+
+        Assert.NotNull(gallery);
+        var item = Assert.Single(gallery, p => p.Urls == shown.Urls);
+        // English left empty: the Bulgarian text stands in for it.
+        Assert.Equal("Сцена", item.Alt);
+        Assert.DoesNotContain(gallery, p => p.Urls == hidden.Urls);
+    }
+
     /// <summary>A real JPEG of the given size, drawn on the spot — no test files to keep in the repo.</summary>
     private static MultipartFormDataContent Picture(int width, int height)
     {

@@ -35,6 +35,7 @@ export function Layout({
               {en ? "Concerts" : "Концерти"}
             </NavLink>
             <NavLink to="/news">{en ? "News" : "Новини"}</NavLink>
+            <NavLink to="/gallery">{en ? "Gallery" : "Галерия"}</NavLink>
             {state.status === "signedIn" && (
               <NavLink to="/admin">{en ? "Admin" : "Админ"}</NavLink>
             )}
