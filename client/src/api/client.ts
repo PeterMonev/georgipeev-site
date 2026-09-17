@@ -65,23 +65,28 @@ function camelCaseKeys(errors: FieldErrors): FieldErrors {
   );
 }
 
+/**
+ * The error for a failed response, whoever made the request. fetch and the
+ * XMLHttpRequest uploader both end up here, so every failure looks the same
+ * to the code above.
+ */
+export function failure(status: number, statusText: string, body: string): ApiError {
+  const problem = parseJson(body);
+
+  if (isProblemDetails(problem)) {
+    return new ApiError(status, problem.title ?? statusText, camelCaseKeys(problem.errors ?? {}));
+  }
+
+  return new ApiError(status, body || statusText);
+}
+
 async function throwIfFailed(response: Response): Promise<void> {
   if (response.ok) return;
 
   // A failed response often carries a useful body. Read it before throwing,
   // otherwise the caller only ever sees a bare status number.
   const text = await response.text().catch(() => "");
-  const problem = parseJson(text);
-
-  if (isProblemDetails(problem)) {
-    throw new ApiError(
-      response.status,
-      problem.title ?? response.statusText,
-      camelCaseKeys(problem.errors ?? {}),
-    );
-  }
-
-  throw new ApiError(response.status, text || response.statusText);
+  throw failure(response.status, response.statusText, text);
 }
 
 type Method = "GET" | "POST" | "PUT" | "DELETE";
@@ -146,6 +151,11 @@ export async function putJson<TResponse>(
  */
 export async function post(path: string, body?: unknown, signal?: AbortSignal): Promise<void> {
   await send("POST", path, body, signal);
+}
+
+/** PUT a JSON body and expect nothing back (204) — reordering, for instance. */
+export async function put(path: string, body: unknown, signal?: AbortSignal): Promise<void> {
+  await send("PUT", path, body, signal);
 }
 
 /** DELETE, expecting 204. Named `del` because `delete` is a reserved word. */

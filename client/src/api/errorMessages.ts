@@ -69,6 +69,20 @@ const messages: Partial<Record<string, Record<Lang, string>>> = {
     bg: "Английският текст е твърде дълъг.",
     en: "The English text is too long.",
   },
+
+  // Photos
+  NotAnImage: {
+    bg: "Файлът не е снимка.",
+    en: "The file is not a picture.",
+  },
+  TooLarge: {
+    bg: "Снимката е твърде голяма — до 20 MB и до 50 мегапиксела.",
+    en: "The picture is too large — up to 20 MB and 50 megapixels.",
+  },
+  OutOfRange: {
+    bg: "Стойността е извън допустимото.",
+    en: "The value is out of range.",
+  },
 };
 
 const fallback: Record<Lang, string> = {

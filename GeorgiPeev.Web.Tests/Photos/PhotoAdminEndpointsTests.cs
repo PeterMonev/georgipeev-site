@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using GeorgiPeev.Web.Common;
 using GeorgiPeev.Web.Features.Photos;
 using GeorgiPeev.Web.Tests.Infrastructure;
 using Microsoft.AspNetCore.Http;
@@ -79,6 +80,67 @@ public sealed class PhotoAdminEndpointsTests(TestApp app)
         Assert.Equal(HttpStatusCode.NoContent, deleted.StatusCode);
         Assert.Equal(HttpStatusCode.NotFound, again.StatusCode);
         Assert.Equal(HttpStatusCode.NotFound, file.StatusCode);
+    }
+
+    [Fact]
+    public async Task Alt_text_focus_and_visibility_can_be_changed()
+    {
+        var client = await app.SignedInClientAsync();
+        var created = await client.PostAsync(Base, Picture(400, 400), Cancel);
+        var photo = await created.Content.ReadFromJsonAsync<PhotoAdminItem>(Cancel);
+        Assert.NotNull(photo);
+
+        var update = new PhotoUpdate(new Localized("На сцената", "On stage"), 0.25, 0.75, false);
+        var response = await client.PutAsJsonAsync($"{Base}/{photo.Id}", update, Cancel);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var updated = await response.Content.ReadFromJsonAsync<PhotoAdminItem>(Cancel);
+        Assert.NotNull(updated);
+        Assert.Equal(update.Alt, updated.Alt);
+        Assert.Equal((0.25, 0.75, false), (updated.FocusX, updated.FocusY, updated.IsPublished));
+        // Files and size are not the form's to change.
+        Assert.Equal(photo.Urls, updated.Urls);
+    }
+
+    [Fact]
+    public async Task A_focus_outside_the_picture_is_refused()
+    {
+        var client = await app.SignedInClientAsync();
+        var created = await client.PostAsync(Base, Picture(400, 400), Cancel);
+        var photo = await created.Content.ReadFromJsonAsync<PhotoAdminItem>(Cancel);
+        Assert.NotNull(photo);
+
+        var update = new PhotoUpdate(new Localized("", ""), 1.5, 0.5, true);
+        var response = await client.PutAsJsonAsync($"{Base}/{photo.Id}", update, Cancel);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        var problem = await response.Content.ReadFromJsonAsync<HttpValidationProblemDetails>(Cancel);
+        Assert.NotNull(problem);
+        Assert.Equal("OutOfRange", Assert.Single(problem.Errors["FocusX"]));
+    }
+
+    [Fact]
+    public async Task The_order_sent_is_the_order_listed()
+    {
+        var client = await app.SignedInClientAsync();
+        var ids = new List<Guid>();
+        for (var i = 0; i < 3; i++)
+        {
+            var created = await client.PostAsync(Base, Picture(300, 300), Cancel);
+            var photo = await created.Content.ReadFromJsonAsync<PhotoAdminItem>(Cancel);
+            Assert.NotNull(photo);
+            ids.Add(photo.Id);
+        }
+
+        // Reverse the three we made; every other test's photo is untouched.
+        var reversed = Enumerable.Reverse(ids).ToArray();
+        var response = await client.PutAsJsonAsync($"{Base}/order", reversed, Cancel);
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+
+        var listed = await client.GetFromJsonAsync<List<PhotoAdminItem>>(Base, Cancel);
+        Assert.NotNull(listed);
+        var ours = listed.Where(p => ids.Contains(p.Id)).Select(p => p.Id).ToArray();
+        Assert.Equal(reversed, ours);
     }
 
     /// <summary>A real JPEG of the given size, drawn on the spot — no test files to keep in the repo.</summary>

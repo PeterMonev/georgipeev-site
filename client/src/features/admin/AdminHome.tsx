@@ -38,6 +38,9 @@ export function AdminHome({ lang }: { lang: Lang }) {
           <Link to="/admin/concerts">{en ? "Concerts" : "Концерти"}</Link>
         </li>
         <li>
+          <Link to="/admin/photos">{en ? "Pictures" : "Снимки"}</Link>
+        </li>
+        <li>
           <Link to="/admin/password">{en ? "Change password" : "Смяна на паролата"}</Link>
         </li>
                 <li>

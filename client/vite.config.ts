@@ -18,6 +18,8 @@ export default defineConfig({
     proxy: {
       '/api': 'http://localhost:5038',
       '/healthz': 'http://localhost:5038',
+      // Uploaded pictures, served by the C# server from disk during development.
+      '/media': 'http://localhost:5038',
     },
   },
 })

@@ -133,3 +133,33 @@ export type NewsInput = {
   isPublished: boolean;
   version: number;
 };
+
+/** Mirrors GeorgiPeev.Web.Features.Photos.PhotoUrls — one file per variant, for srcset. */
+export type PhotoUrls = {
+  small: string;
+  medium: string;
+  large: string;
+};
+
+/** Mirrors GeorgiPeev.Web.Features.Photos.PhotoAdminItem. */
+export type PhotoAdminItem = {
+  id: string;
+  alt: Localized;
+  width: number;
+  height: number;
+  /** 0..1 from the left edge: where crops are centred. */
+  focusX: number;
+  /** 0..1 from the top edge. */
+  focusY: number;
+  sortOrder: number;
+  isPublished: boolean;
+  urls: PhotoUrls;
+};
+
+/** Mirrors GeorgiPeev.Web.Features.Photos.PhotoUpdate. */
+export type PhotoUpdate = {
+  alt: Localized;
+  focusX: number;
+  focusY: number;
+  isPublished: boolean;
+};
