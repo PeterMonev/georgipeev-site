@@ -15,6 +15,8 @@ import { ConcertPage } from "./features/concerts/ConcertPage";
 import { EditStoryPage } from "./features/admin/news/EditStoryPage";
 import { NewsAdminPage } from "./features/admin/news/NewsAdminPage";
 import { NewStoryPage } from "./features/admin/news/NewStoryPage";
+import { EditPhotoPage } from "./features/admin/photos/EditPhotoPage";
+import { PhotosPage } from "./features/admin/photos/PhotosPage";
 import { NewsList } from "./features/news/NewsList";
 import { StoryPage } from "./features/news/StoryPage";
 
@@ -46,6 +48,8 @@ export default function App() {
             <Route path="/admin/news" element={<NewsAdminPage lang={lang} />} />
             <Route path="/admin/news/new" element={<NewStoryPage lang={lang} />} />
             <Route path="/admin/news/:id" element={<EditStoryPage lang={lang} />} />
+            <Route path="/admin/photos" element={<PhotosPage lang={lang} />} />
+            <Route path="/admin/photos/:id" element={<EditPhotoPage lang={lang} />} />
           </Route>
 
           <Route
