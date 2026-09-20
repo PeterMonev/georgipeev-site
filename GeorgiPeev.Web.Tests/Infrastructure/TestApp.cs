@@ -54,6 +54,8 @@ public sealed class TestApp : WebApplicationFactory<Program>, IAsyncLifetime
         builder.UseSetting("ConnectionStrings:Db", _postgres.GetConnectionString());
         builder.UseSetting("Admins:0:Email", AdminEmail);
         builder.UseSetting("Admins:0:Password", AdminPassword);
+        // The developer's User Secrets may point at R2; tests always use the disk.
+        builder.UseSetting("Photos:Storage", "Disk");
         builder.UseSetting("Photos:DiskRoot", _mediaRoot);
     }
 

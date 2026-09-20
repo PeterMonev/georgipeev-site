@@ -78,10 +78,24 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddAuthorization();
 
-// Pictures: the storage is an interface with one implementation for now.
-// Production will register R2 here instead, chosen by configuration.
-builder.Services.Configure<PhotoOptions>(builder.Configuration.GetSection(PhotoOptions.Section));
-builder.Services.AddSingleton<IPhotoStorage, DiskPhotoStorage>();
+// Pictures: one interface, two homes. The disk while developing, Cloudflare
+// R2 in production — chosen by Photos:Storage. Choosing R2 without its keys
+// is refused at start-up, not discovered at the first upload.
+builder.Services.AddOptions<PhotoOptions>()
+    .Bind(builder.Configuration.GetSection(PhotoOptions.Section))
+    .Validate(o => !o.UsesR2 || o.R2?.IsComplete == true,
+        "Photos:Storage is R2 but Photos:R2 (Endpoint, Bucket, AccessKey, SecretKey, PublicBaseUrl) is incomplete.")
+    .ValidateOnStart();
+
+if (builder.Configuration.GetSection(PhotoOptions.Section).Get<PhotoOptions>()?.UsesR2 == true)
+{
+    builder.Services.AddSingleton<IPhotoStorage, R2PhotoStorage>();
+}
+else
+{
+    builder.Services.AddSingleton<IPhotoStorage, DiskPhotoStorage>();
+}
+
 builder.Services.AddSingleton<PhotoProcessor>();
 
 // The form parser has its own ceiling, separate from ours; raise it to match
